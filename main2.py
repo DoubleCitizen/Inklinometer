@@ -150,7 +150,8 @@ def SelectMethod(image, r=215, g=236, b=241, scale=100, hsv=[0, 255, 56, 255, 0,
     # Обрезка
     w, h = gray.shape[:2]
     thresh = cv2.inRange(hsv_img, lower, upper)
-    x1, y1, x2, y2 = getCont(thresh, 1000, (w * h) * 0.9)
+    #x1, y1, x2, y2 = getCont(thresh, 1000, (w * h) * 0.9)
+    x1, y1, x2, y2 = 0, 115, 640, 210
     cv2.rectangle(thresh, (x1, y1), (x2, y2), (0, 255, 0), 2)
     viewImage(thresh, "Test", scale)
     gray = gray[y1:y2, x1:x2]
@@ -163,11 +164,11 @@ def SelectMethod(image, r=215, g=236, b=241, scale=100, hsv=[0, 255, 56, 255, 0,
     viewImage(threshold, "threshold", scale)  ## 4
     contours, hierarchy = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-    try:
-        x1, y1, x2, y2 = getCont(threshold)
-        cv2.rectangle(gray, (x1, y1), (x2, y2), (0, 255, 0), 2)
-    except:
-        x1, y1, x2, y2 = 0, 0, 0, 0
+    #try:
+    x1, y1, x2, y2 = getCont(threshold)
+    cv2.rectangle(gray, (x1, y1), (x2, y2), (0, 255, 0), 2)
+    #except:
+    #    x1, y1, x2, y2 = 0, 0, 0, 0
 
     cv2.drawContours(image, contours, -1, (0, 0, 255), 3)
     viewImage(image, "image", scale)  ## 5
@@ -639,7 +640,7 @@ while (cap.isOpened()):
     cv2.putText(winfo, f"SR_arifm = {(x_left + x_right) / 2}px", (0, 400), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 150, 0),
                 2)
     cv2.putText(winfo, f"bth = {bth}px", (0, 450), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 150, 0), 2)
-    cv2.putText(winfo, f"count_sec = {get_second_method(x_left, y_down, x_right, y_up, horizontal_count, 0.340322923, weight_x, height_y)}''", (0, 500), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 150, 0), 2)
+    cv2.putText(winfo, f"count_sec = {get_second_method(x_left, y_down, x_right, y_up, horizontal_count, 0.314311216, weight_x, height_y)}''", (0, 500), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 150, 0), 2)
 
     # Отображение изображений
     # cv2.imshow("Video imgStackimgContour", imgStack)
