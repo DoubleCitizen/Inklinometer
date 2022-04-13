@@ -12,8 +12,8 @@ from PIL import Image, ImageEnhance
 # path = "Resources/normal/IMG_6050.mov"
 
 # path = "Resources/Fresh/IMG_6306.mov"
-path = "output_video3.avi"
-#path = 0
+#path = "output_video3.avi"
+path = 0
 # cap = cv2.VideoCapture('http://192.168.1.49:81/stream')
 cap = cv2.VideoCapture(path)
 winfo = np.zeros((512, 512, 3), np.uint8)
@@ -61,6 +61,35 @@ x_left = 0
 x_right = 0
 
 SKO = 4
+
+def get_second_method(x1=0, y1=0, x2=0, y2=0, is_vert=1, count_sec=0, width_win=0, height_win=0):
+    """
+    Функция определяет сколько в одном пикселе угловых секунд
+    И выводит результат
+    :param x1: координата пузырька
+    :param y1: координата пузырька
+    :param x2: координата пузырька
+    :param y2: координата пузырька
+    :param is_vert: булевское значение повернутости экрана
+    :param count_sec: Количество секунд в одном пикселе
+    :param width_win: ширина окна
+    :param height_win: высота окна
+    :return: Возрвращает угловые секунды
+    """
+    center = 0
+    reference_point = 0
+    result_second = 0
+    if is_vert == 0:
+        center = (y1 + y2) / 2
+        reference_point = height_win / 2
+    else:
+        center = (x1 + x2) / 2
+        reference_point = width_win / 2
+    result_second = (reference_point - center) * count_sec
+    print(f"reference_point = {reference_point}")
+    print(f"center = {center}")
+    #result_second = result_second
+    return result_second
 
 
 def viewImage(src, str, scale=100):
@@ -602,14 +631,15 @@ while (cap.isOpened()):
 
     # Заполнение информационного окна
     winfo = np.zeros((512, 512, 3), np.uint8)
-    cv2.putText(winfo, f"Отклонение пузырька = {getgrad}''", (0, 200), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 150, 0), 2)
-    cv2.putText(winfo, f"X_EX = {x_ex}px", (0, 250), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 150, 0), 2)
-    cv2.putText(winfo, f"Center = {weight_x / 2}px", (0, 300), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 150, 0), 2)
-    cv2.putText(winfo, f"X_left = {x_left}px", (0, 350), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 150, 0), 2)
-    cv2.putText(winfo, f"X_right = {x_right}px", (0, 400), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 150, 0), 2)
-    cv2.putText(winfo, f"SR_arifm = {(x_left + x_right) / 2}px", (0, 450), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 150, 0),
+    cv2.putText(winfo, f"Отклонение пузырька = {getgrad}''", (0, 150), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 150, 0), 2)
+    cv2.putText(winfo, f"X_EX = {x_ex}px", (0, 200), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 150, 0), 2)
+    cv2.putText(winfo, f"Center = {weight_x / 2}px", (0, 250), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 150, 0), 2)
+    cv2.putText(winfo, f"X_left = {x_left}px", (0, 300), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 150, 0), 2)
+    cv2.putText(winfo, f"X_right = {x_right}px", (0, 350), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 150, 0), 2)
+    cv2.putText(winfo, f"SR_arifm = {(x_left + x_right) / 2}px", (0, 400), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 150, 0),
                 2)
-    cv2.putText(winfo, f"bth = {bth}px", (0, 500), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 150, 0), 2)
+    cv2.putText(winfo, f"bth = {bth}px", (0, 450), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 150, 0), 2)
+    cv2.putText(winfo, f"count_sec = {get_second_method(x_left, y_down, x_right, y_up, horizontal_count, 0.340322923, weight_x, height_y)}''", (0, 500), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 150, 0), 2)
 
     # Отображение изображений
     # cv2.imshow("Video imgStackimgContour", imgStack)
