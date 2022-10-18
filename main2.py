@@ -12,8 +12,8 @@ from PIL import Image, ImageEnhance
 # path = "Resources/normal/IMG_6050.mov"
 
 # path = "Resources/Fresh/IMG_6306.mov"
-#path = "output_video3.avi"
-path = 0
+#path = "output_video2.avi"
+path = 1
 # cap = cv2.VideoCapture('http://192.168.1.49:81/stream')
 cap = cv2.VideoCapture(path)
 winfo = np.zeros((512, 512, 3), np.uint8)
@@ -128,16 +128,16 @@ def SelectMethod(image, r=215, g=236, b=241, scale=100, hsv=[0, 255, 56, 255, 0,
             MedianNeChet += 1
         image = cv2.medianBlur(image, MedianNeChet)
 
-    viewImage(image, "Original", scale)
+    # viewImage(image, "Original", scale)
 
     hsv_img = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    viewImage(hsv_img, "hsv_img1", scale)  ## 1
+    # viewImage(hsv_img, "hsv_img1", scale)  ## 1
     # lower = np.array([188, 199, 219])
     # upper = np.array([208, 219, 241])
     curr_mask = cv2.inRange(hsv_img, lower, upper)
     # hsv_img[curr_mask > 0] = ([208, 255, 200])
     hsv_img[curr_mask > 0] = ([255, 255, 255])
-    viewImage(hsv_img, "hsv_img", scale)  ## 2
+    # viewImage(hsv_img, "hsv_img", scale)  ## 2
 
     # Фильтрация
     ## Преобразование HSV-изображения к оттенкам серого для дальнейшего
@@ -145,7 +145,7 @@ def SelectMethod(image, r=215, g=236, b=241, scale=100, hsv=[0, 255, 56, 255, 0,
     RGB_again = cv2.cvtColor(hsv_img, cv2.COLOR_HSV2RGB)
     gray = cv2.cvtColor(RGB_again, cv2.COLOR_RGB2GRAY)
 
-    viewImage(gray, "grayS", scale)  ## 3
+    # viewImage(gray, "grayS", scale)  ## 3
 
     # Обрезка
     w, h = gray.shape[:2]
@@ -153,7 +153,7 @@ def SelectMethod(image, r=215, g=236, b=241, scale=100, hsv=[0, 255, 56, 255, 0,
     #x1, y1, x2, y2 = getCont(thresh, 1000, (w * h) * 0.9)
     x1, y1, x2, y2 = 0, 115, 640, 210
     cv2.rectangle(thresh, (x1, y1), (x2, y2), (0, 255, 0), 2)
-    viewImage(thresh, "Test", scale)
+    # viewImage(thresh, "Test", scale)
     gray = gray[y1:y2, x1:x2]
     image = image[y1:y2, x1:x2]
 
@@ -161,7 +161,7 @@ def SelectMethod(image, r=215, g=236, b=241, scale=100, hsv=[0, 255, 56, 255, 0,
     wei, hei = gray.shape[:2]
 
     ret, threshold = cv2.threshold(gray, r, g, b)
-    viewImage(threshold, "threshold", scale)  ## 4
+    # viewImage(threshold, "threshold", scale)  ## 4
     contours, hierarchy = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     #try:
