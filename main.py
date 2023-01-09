@@ -15,7 +15,6 @@ while True:
     cv2.namedWindow(name_of_window, cv2.WINDOW_NORMAL)
     cv2.imshow(name_of_window, img)
 
-
     inklinometer.main()
     trackbars.save()
 
