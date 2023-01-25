@@ -16,6 +16,7 @@ class Inklinometer:
         self.trackbars = trackbars
         success, img = camera.get_image()
         self.height, self.width = img.shape[:2]
+        self.center_bubble = 0
         self.x1 = 0
         self.y1 = 0
         self.x2 = 0
@@ -254,6 +255,8 @@ class Inklinometer:
         else:
             return y_down
 
+    # def
+
     def main(self):
         r = self.trackbars.r
         g = self.trackbars.g
@@ -314,6 +317,7 @@ class Inklinometer:
             cv2.rectangle(self.gray, ((self.width // 2), 0), ((self.width // 2), 1920), (0, 255, 0), 6)
             cv2.rectangle(self.gray, ((self.width // 2), 0), ((self.width // 2), 1920), (0, 255, 0), 6)
 
+            self.center_bubble = (self.x1 + self.x2) / 2
             # Заполнение информационного окна
             winfo = np.zeros((512, 512, 3), np.uint8)
             cv2.putText(winfo, f"Отклонение пузырька = {self.get_gradus}''", (0, 150), cv2.FONT_HERSHEY_COMPLEX, 0.8,
@@ -323,7 +327,7 @@ class Inklinometer:
             cv2.putText(winfo, f"Center = {self.width / 2}px", (0, 250), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 150, 0), 2)
             cv2.putText(winfo, f"X_left = {self.x1}px", (0, 300), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 150, 0), 2)
             cv2.putText(winfo, f"X_right = {self.x2}px", (0, 350), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 150, 0), 2)
-            cv2.putText(winfo, f"SR_arifm = {(self.x1 + self.x2) / 2}px", (0, 400), cv2.FONT_HERSHEY_COMPLEX, 0.8,
+            cv2.putText(winfo, f"SR_arifm = {self.center_bubble}px", (0, 400), cv2.FONT_HERSHEY_COMPLEX, 0.8,
                         (0, 150, 0),
                         2)
             cv2.putText(winfo, f"bth = {bth}px", (0, 450), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 150, 0), 2)
@@ -337,3 +341,5 @@ class Inklinometer:
                         f"count_sec = {self.get_second_method()}''",
                         (0, 500), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 150, 0), 2)
             cv2.imshow("Window", winfo)
+
+
