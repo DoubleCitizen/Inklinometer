@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class ConverterTxtToDict:
@@ -11,20 +11,21 @@ class ConverterTxtToDict:
 
     def convert(self, data):
         for id, val in enumerate(data):
-            find_read_data = val.find("Read data")
+            datetime_now_inklinometer = str(datetime.now().replace(microsecond=0) - timedelta(seconds=0))
             find_x = val.find("X:")
             find_y = val.find("Y:")
-            if find_read_data != -1:
-                date_time_str = val[1:20]
-                date_time_obj = datetime.strptime(date_time_str, '%d/%m/%Y %H:%M:%S')
-                self.date_time_str = str(date_time_obj)
+            find_t = val.find("T:")
+
+            date_time_str = datetime_now_inklinometer
+            self.date_time_str = str(date_time_str)
+
             if find_x != -1:
                 X = val[find_x:find_x + 8]
                 self.data_list = []
                 self.data_list.append(X)
             if find_y != -1:
                 Y = val[find_y:find_y + 8]
-                T = val[find_y + 9:find_y + 16]
+                T = val[find_t:find_t + 7]
                 self.data_list.append(Y)
                 self.data_list.append(T)
                 x_key = self.data_list[0][0]

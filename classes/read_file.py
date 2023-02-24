@@ -4,5 +4,6 @@ class ReaderTxt:
 
     def read(self):
         with open(self.path, 'r') as file:
-            text = file.readlines()
-        return text
+            lines = file.readlines()
+            last_line = lines[-6:-1]
+        return last_line

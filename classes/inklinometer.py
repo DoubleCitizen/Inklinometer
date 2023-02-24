@@ -45,7 +45,8 @@ class Inklinometer:
         else:
             center = (self.x1 + self.x2) / 2
             reference_point = self.width / 2
-        result_second = (reference_point - center) * self.COUNT_ARC_SECOND
+        # result_second = (reference_point - center) * self.COUNT_ARC_SECOND
+        result_second = self.center_bubble * -0.009037444160292861
         # print(f"reference_point = {reference_point}")
         # print(f"center = {center}")
         return result_second
@@ -57,7 +58,7 @@ class Inklinometer:
         except:
             pass
 
-    def get_cont(self, img, from_=200, to_=6000):
+    def get_cont(self, img, from_=200, to_=10000):
         contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         x, y, w, h = 0, 0, 0, 0
         for id, cnt in enumerate(contours):
