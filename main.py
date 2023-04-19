@@ -1,6 +1,8 @@
 import collections
 from datetime import datetime, timedelta
 
+import numpy as np
+
 from classes.data_inklinometers import DataInklinometers
 from classes.trackbars import Trackbars
 from classes.camera import Camera
@@ -29,13 +31,14 @@ date_time_str_list = []
 CB_sum = 0
 CB_n = 0
 CB_aver = 0
+nivel_deviation = 0
 
 converter_txt_to_dict = ConverterTxtToDict()
 while True:
 
     success, img = camera.get_image()
-    cv2.namedWindow(name_of_window, cv2.WINDOW_NORMAL)
-    cv2.imshow(name_of_window, img)
+    # cv2.namedWindow(name_of_window, cv2.WINDOW_NORMAL)
+    # cv2.imshow(name_of_window, img)
     data_inklinometer = {}
 
     datetime_now_inklinometer = str(datetime.now().replace(microsecond=0) - timedelta(seconds=0))
@@ -59,11 +62,6 @@ while True:
         save_inklinometer1 = SaveInlinometerData('data/data_inklinometer_1.json', data)
         save_inklinometer1.save_json()
 
-    # [last_key] = collections.deque(data, maxlen=1)
-    # print(f"{last_key} * {datetime_now_inklinometer} {last_key==datetime_now_inklinometer}")
-    # data["2023-01-25 15:17:09"] = data[datetime_now_inklinometer] + dict({inklinometer.center_bubble})
-    # print(data.update(now_dict_data))
-    # print(dict(data, **now_dict_data))
     try:
         # data[datetime_now_inklinometer] = {**data[datetime_now_inklinometer], "CB": inklinometer.center_bubble}
         new_dict[str(datetime.now().replace(microsecond=0) - timedelta(seconds=1))] = {
@@ -76,6 +74,43 @@ while True:
     # data_inklinometers.save_json()
     inklinometer.main()
     trackbars.save()
+
+    winfo = np.zeros((512, 512, 3), np.uint8)
+    if CB_n != 0:
+        CB_aver = CB_sum / CB_n
+    linregress_CV_VIM_slope = -0.0015104254841249417
+    # linregress_CV_VIM_intercept = -2.3708779918875607
+    linregress_CV_VIM_intercept = 0.36842533651553694#0.2612950309318273
+
+    CB_aver = CB_aver * linregress_CV_VIM_slope + linregress_CV_VIM_intercept
+    # dif = nivel_deviation - CB_aver
+    # print(CB_aver * linregress_CV_VIM_slope - dif)
+    CB_aver = round(CB_aver, 3)
+    winfo2 = np.zeros((512, 512, 3), np.uint8)
+    cv2.putText(winfo2, f"Видеоинклинометр = {round((CB_aver / 0.0047), 3)}''", (0, 120), cv2.FONT_HERSHEY_COMPLEX, 0.8,
+                (0, 150, 0),
+                2)
+    cv2.putText(winfo2, f"Видеоинклинометр = {CB_aver}mrad", (0, 150), cv2.FONT_HERSHEY_COMPLEX, 0.8,
+                (0, 150, 0),
+                2)
+
+    try:
+        if data is not None:
+            for d in data.values():
+                nivel_deviation = round(d['X'], 3)
+    except:
+        pass
+    cv2.putText(winfo2, f"Nivel220 = {nivel_deviation}mrad", (0, 180), cv2.FONT_HERSHEY_COMPLEX, 0.8,
+                (0, 150, 0),
+                2)
+    cv2.putText(winfo2, f"Difference = {abs(round((nivel_deviation-CB_aver),3))}mrad", (0, 210), cv2.FONT_HERSHEY_COMPLEX, 0.8,
+                (0, 150, 0),
+                2)
+    cv2.putText(winfo2, f"Difference = {abs(round(((nivel_deviation - CB_aver)/0.0047), 3))}''", (0, 240),
+                cv2.FONT_HERSHEY_COMPLEX, 0.8,
+                (0, 150, 0),
+                2)
+    cv2.imshow("Window", winfo2)
 
     cv2.waitKey(1)
     if cv2.waitKey(1) & 0xFF == ord('q'):

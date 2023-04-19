@@ -3,6 +3,7 @@ import numpy as np
 
 from classes.camera import Camera
 from classes.trackbars import Trackbars
+from utils.utils import get_resize_picture
 
 
 class Inklinometer:
@@ -91,7 +92,7 @@ class Inklinometer:
                 MedianNeChet += 1
             image = cv2.medianBlur(image, MedianNeChet)
 
-        self.view_image(image, "Original", scale)
+        # self.view_image(image, "Original", scale)
         hsv_img = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
         # lower = np.array([188, 199, 219])
         # upper = np.array([208, 219, 241])
@@ -112,12 +113,12 @@ class Inklinometer:
         self.x1_framing, self.y1_framing, self.x2_framing, self.y2_framing = self.get_cont(thresh, 1000, (w * h) * 0.9)
         # x1, y1, x2, y2 = 0, 115, 640, 210
         cv2.rectangle(thresh, (self.x1_framing, self.y1_framing), (self.x2_framing, self.y2_framing), (0, 255, 0), 2)
-        self.view_image(thresh, "Test", scale)
+        # self.view_image(thresh, "Test", scale)
         self.gray = self.gray[self.y1_framing:self.y2_framing, self.x1_framing:self.x2_framing]
         image = image[self.y1_framing:self.y2_framing, self.x1_framing:self.x2_framing]
 
         ret, threshold = cv2.threshold(self.gray, r, g, b)
-        self.view_image(threshold, "threshold", scale)  ## 4
+        # self.view_image(threshold, "threshold", scale)  ## 4
         contours, hierarchy = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
         x1, y1, x2, y2 = self.get_cont(threshold)

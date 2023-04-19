@@ -1,8 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-df_1 = pd.read_json('../data/5 минут 1 секунда часового удачный/data_inklinometer_1.json', orient='index')
-df_2 = pd.read_json('../data/5 минут 1 секунда часового удачный/data_inklinometer_2.json', orient='index')
+df_1 = pd.read_json('../data/5 минут 5 секунды часового удачный/data_inklinometer_1.json', orient='index')
+df_2 = pd.read_json('../data/5 минут 5 секунды часового удачный/data_inklinometer_2.json', orient='index')
 frames = [df_1, df_2]
 df = pd.concat(frames, axis=1, join='inner')
 print(df)
