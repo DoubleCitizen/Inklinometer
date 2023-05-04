@@ -18,8 +18,9 @@ path = "data"
 datetime_now_inklinometer = str(datetime.now().replace(microsecond=0) - timedelta(seconds=0))
 datetime_now_inklinometer = datetime_now_inklinometer.replace('-', '_')
 datetime_now_inklinometer = datetime_now_inklinometer.replace(':', '_')
+datetime_now_inklinometer = datetime_now_inklinometer.replace(' ', '_')
 
-output = cv2.VideoWriter(f'{path}/inklin_{datetime_now_inklinometer}.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 60.0, (height, width))
+output = cv2.VideoWriter(f'{path}/inklin_{datetime_now_inklinometer}.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 30.0, (height, width))
 
 reader_txt = ReaderTxt("data/data_port_spy_2.txt")
 
