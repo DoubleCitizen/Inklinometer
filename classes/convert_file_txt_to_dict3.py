@@ -1,76 +1,38 @@
-from datetime import datetime
-
 
 class ConverterTxtToDict:
     def __init__(self):
-        self.date_time_str_list = []
         self.list_dicts = []
-        self.data_dict = {}
-        self.data_list = []
-        self.date_time_str = ""
+        self.raw_data_list: list = []
+        self.data_list: list = []
 
     def convert(self, data):
         for id, val in enumerate(data):
-            find_read_data = val.find("Read data")
-            find_x = val.find("X:")
-            find_y = val.find("Y:")
-            if find_read_data != -1:
-                date_time_str = val[1:20]
-                date_time_obj = datetime.strptime(date_time_str, '%d/%m/%Y %H:%M:%S')
-                self.date_time_str = str(date_time_obj)
-            if find_x != -1:
-                X = val[find_x:find_x + 8]
-                self.data_list = []
-                self.data_list.append(X)
-            if find_y != -1:
-                Y = val[find_y:find_y + 8]
-                T = val[find_y + 9:find_y + 16]
-                self.data_list.append(Y)
-                self.data_list.append(T)
-                x_key = self.data_list[0][0]
-                y_key = self.data_list[1][0]
-                t_key = self.data_list[2][0]
-                x_val = float(self.data_list[0][2:len(self.data_list[0])])
-                y_val = float(self.data_list[1][2:len(self.data_list[0])])
-                t_val = float(self.data_list[2][2:len(self.data_list[0])])
-                self.data_dict[self.date_time_str] = {x_key: x_val,
-                                                      y_key: y_val,
-                                                      t_key: t_val, }
-                self.date_time_str_list.append(self.date_time_str)
-                if len(self.list_dicts) < 1:
-                    self.list_dicts.append(self.data_dict)
-                    # print(self.list_dicts[-1])
+            line_list: list = val.split('\t')
+            if line_list[2] == 'IRP_MJ_READ' and line_list[4] == 'STATUS_SUCCESS':
+                date_time = line_list[1]
+                coords: str = line_list[6]
+                x_var = float(coords[coords.find('X') + 2:coords.find('Y') - 1])
+                y_var = float(coords[coords.find('Y') + 2:coords.find('T') - 1])
+                t_var = float(coords[coords.find('T') + 2:coords.find('T') + 7])
+                self.raw_data_list.append([date_time, x_var, y_var, t_var])
+        summ = []
+        counter = 0
+        for id, val in enumerate(self.raw_data_list):
+            if len(self.raw_data_list) - 1 > id:
+                # print(f"id = {id} len = {len(self.raw_data_list)}")
+                val_next = self.raw_data_list[id + 1]
+            if val_next[0] == val[0]:
+                counter += 1
+                summ = [val[1] + val_next[1], val[2] + val_next[2], val[3] + val_next[3]]
+            else:
+                date_time = val[0]
+                self.data_list.append([date_time, summ[0] / counter, summ[1] / counter, summ[2] / counter])
+                counter = 1
+                summ = [val[1], val[2], val[3]]
+        result_dict = {}
+        for id, val in enumerate(self.data_list):
+            result_dict[val[0].replace("/", "-")] = {"X": val[1], "Y": val[2], "T": val[3]}
+        return result_dict
 
-                for key, val in self.list_dicts[-1].items():
-                    if key == self.date_time_str_list[0]:
-                        # print(f"key = {key}; self.date_time_str_prev = {self.date_time_str_list[0]}")
-                        # print(f"{key==self.date_time_str_list[0]}")
-                        self.list_dicts.append(self.data_dict)
-                        # print(f"i = {self.i}")
-                    else:
-                        x_sum = 0
-                        y_sum = 0
-                        t_sum = 0
-                        n = 0
-                        now_time = self.date_time_str_list[0]
-                        # print(self.list_dicts)
-                        for id, dict in enumerate(self.list_dicts):
-                            try:
-                                x_sum += dict[now_time]['X']
-                                y_sum += dict[now_time]['Y']
-                                t_sum += dict[now_time]['T']
-                                n = id + 1
-                            except KeyError:
-                                break
-                        x_aver = x_sum / n
-                        y_aver = y_sum / n
-                        t_aver = t_sum / n
-                        result_dict = {self.date_time_str_list[0]: {'X': x_aver, 'Y': y_aver, 'T': t_aver}}
-                        self.date_time_str_list = []
-                        self.list_dicts = []
 
-                        return result_dict
-                    # print(self.list_dicts)
 
-                self.data_dict = {}
-                self.data_list = []

@@ -6,7 +6,7 @@ class Camera:
     def __init__(self, source: str | int):
         self.count_frames = 0
         self.source: str | int = source
-        self.cap = cv2.VideoCapture(self.source)
+        self.cap = cv2.VideoCapture(self.source, cv2.CAP_DSHOW)
         self.winfo = np.zeros((512, 512, 3), np.uint8)
 
     def get_image(self):

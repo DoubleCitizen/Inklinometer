@@ -113,5 +113,5 @@ while True:
 
     cv2.imshow("Window", winfo2)
 
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if (cv2.waitKey(1) & 0xFF == ord('q')) or (seconds_left <= 0 and seconds_passed >= 1):
         break
