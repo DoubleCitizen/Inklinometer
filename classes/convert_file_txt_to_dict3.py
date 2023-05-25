@@ -15,15 +15,14 @@ class ConverterTxtToDict:
                 y_var = float(coords[coords.find('Y') + 2:coords.find('T') - 1])
                 t_var = float(coords[coords.find('T') + 2:coords.find('T') + 7])
                 self.raw_data_list.append([date_time, x_var, y_var, t_var])
-        summ = []
+        summ = [0, 0, 0]
         counter = 0
         for id, val in enumerate(self.raw_data_list):
             if len(self.raw_data_list) - 1 > id:
-                # print(f"id = {id} len = {len(self.raw_data_list)}")
                 val_next = self.raw_data_list[id + 1]
             if val_next[0] == val[0]:
                 counter += 1
-                summ = [val[1] + val_next[1], val[2] + val_next[2], val[3] + val_next[3]]
+                summ = [summ[0] + val_next[1], summ[1] + val_next[2], summ[2] + val_next[3]]
             else:
                 date_time = val[0]
                 self.data_list.append([date_time, summ[0] / counter, summ[1] / counter, summ[2] / counter])
