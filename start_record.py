@@ -6,7 +6,7 @@ import cv2
 
 from classes.read_file import ReaderTxt
 
-camera = Camera("output_video2.avi")
+camera = Camera(1)
 
 converter_txt_to_dict = ConverterTxtToDict()
 

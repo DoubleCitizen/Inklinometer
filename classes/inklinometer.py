@@ -59,7 +59,7 @@ class Inklinometer:
         except:
             pass
 
-    def get_cont(self, img, from_=200, to_=10000):
+    def get_cont(self, img, from_=200, to_=5000):
         contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         x, y, w, h = 0, 0, 0, 0
         for id, cnt in enumerate(contours):

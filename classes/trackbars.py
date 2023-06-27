@@ -3,6 +3,8 @@ from json import JSONDecodeError
 
 import cv2
 
+def back(*args):
+    pass
 
 class Trackbars:
     def empty(self, a):
@@ -19,24 +21,24 @@ class Trackbars:
     def __init__(self, path_data):
         self.data = {}
         self.load_json(path_data)
-        self.h_minT = self.data.get('h_min', 0)
-        self.h_maxT = self.data.get('h_max', 0)
-        self.s_minT = self.data.get('s_min', 0)
-        self.s_maxT = self.data.get('s_max', 0)
-        self.v_minT = self.data.get('v_min', 0)
-        self.v_maxT = self.data.get('v_max', 0)
-        self.w_2_leftT = self.data.get('w_2_left', 0)
-        self.w_1_rightT = self.data.get('w_1_right', 0)
-        self.rT = self.data.get('r', 0)
-        self.gT = self.data.get('g', 0)
-        self.bT = self.data.get('b', 0)
-        self.medT = self.data.get('med', 0)
-        self.horizontal_countT = self.data.get('horizontal_count', 0)
-        self.height_1T = self.data.get('height_1', 0)
-        self.height_2T = self.data.get('height_2', 0)
-        self.width_1T = self.data.get('width_1', 0)
-        self.width_2T = self.data.get('width_2', 0)
-        self.scale_percentT = self.data.get('scale_percent', 0)
+        self.h_minT = self.data.get('h_min')
+        self.h_maxT = self.data.get('h_max')
+        self.s_minT = self.data.get('s_min')
+        self.s_maxT = self.data.get('s_max')
+        self.v_minT = self.data.get('v_min')
+        self.v_maxT = self.data.get('v_max')
+        self.w_2_leftT = self.data.get('w_2_left')
+        self.w_1_rightT = self.data.get('w_1_right')
+        self.rT = self.data.get('r')
+        self.gT = self.data.get('g')
+        self.bT = self.data.get('b')
+        self.medT = self.data.get('med')
+        self.horizontal_countT = self.data.get('horizontal_count')
+        self.height_1T = self.data.get('height_1')
+        self.height_2T = self.data.get('height_2')
+        self.width_1T = self.data.get('width_1')
+        self.width_2T = self.data.get('width_2')
+        self.scale_percentT = self.data.get('scale_percent')
 
         cv2.namedWindow("NewMethod")
         cv2.resizeWindow("NewMethod", 640, 240)
@@ -44,6 +46,7 @@ class Trackbars:
         cv2.createTrackbar("Green", "NewMethod", 0, 255, self.empty)
         cv2.createTrackbar("Blue", "NewMethod", 0, 255, self.empty)
         cv2.createTrackbar("Median", "NewMethod", 0, 10, self.empty)
+
 
         cv2.namedWindow("Rotate Images")
         cv2.resizeWindow("Rotate Images", 600, 100)

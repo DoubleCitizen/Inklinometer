@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 import numpy as np
 
 from classes.data_inklinometers import DataInklinometers
+from classes.json_module import JSONModule
 from classes.trackbars import Trackbars
 from classes.camera import Camera
 from classes.inklinometer import Inklinometer
@@ -15,7 +16,7 @@ import cv2
 
 trackbars = Trackbars("data/data.json")
 # camera = Camera("output_video2.avi")
-camera = Camera(0)
+camera = Camera(1)
 name_of_window = "Test"
 inklinometer = Inklinometer(camera=camera, trackbars=trackbars, options=options_dict)
 
@@ -32,6 +33,7 @@ CB_sum = 0
 CB_n = 0
 CB_aver = 0
 nivel_deviation = 0
+json_module = JSONModule('data/variables.json')
 
 converter_txt_to_dict = ConverterTxtToDict()
 while True:
@@ -78,9 +80,11 @@ while True:
     winfo = np.zeros((512, 512, 3), np.uint8)
     if CB_n != 0:
         CB_aver = CB_sum / CB_n
-    linregress_CV_VIM_slope = -0.0015104254841249417
-    # linregress_CV_VIM_intercept = -2.3708779918875607
-    linregress_CV_VIM_intercept = 0.36842533651553694#0.2612950309318273
+    # linregress_CV_VIM_slope = -0.0015104254841249417
+    # # linregress_CV_VIM_intercept = -2.3708779918875607
+    # linregress_CV_VIM_intercept = 0.36842533651553694#0.2612950309318273
+    linregress_CV_VIM_slope = json_module.get('linregress_CV_VIM_slope')
+    linregress_CV_VIM_intercept = json_module.get('linregress_CV_VIM_intercept')
 
     CB_aver = CB_aver * linregress_CV_VIM_slope + linregress_CV_VIM_intercept
     # dif = nivel_deviation - CB_aver
