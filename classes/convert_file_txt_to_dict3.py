@@ -16,7 +16,7 @@ class ConverterTxtToDict:
                 t_var = float(coords[coords.find('T') + 2:coords.find('T') + 7])
                 self.raw_data_list.append([date_time, x_var, y_var, t_var])
         summ = [0, 0, 0]
-        counter = 0
+        counter = 1
         for id, val in enumerate(self.raw_data_list):
             if len(self.raw_data_list) - 1 > id:
                 val_next = self.raw_data_list[id + 1]

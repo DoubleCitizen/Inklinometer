@@ -11,14 +11,16 @@ class SaveInlinometerData:
         self.data = data
 
     def save_json(self):
+        try:
+            with open(self.path, 'r') as file:
+                try:
+                    data = json.loads(file.read())
+                except:
+                    data = {}
 
-        with open(self.path, 'r') as file:
-            try:
-                data = json.loads(file.read())
-            except:
-                data = {}
-
-        merge_twoDict(data, self.data)
+            merge_twoDict(data, self.data)
+        except:
+            data = self.data
 
         with open(self.path, "w+") as file:
             file.write(json.dumps(data))
