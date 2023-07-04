@@ -14,6 +14,7 @@ from classes.save_inklinometer_data import SaveInlinometerData
 from classes.timer import Timer
 import cv2
 
+
 def find(pattern, path):
     result = []
     for root, dirs, files in os.walk(path):
@@ -22,19 +23,19 @@ def find(pattern, path):
                 result.append(os.path.join(root, name))
     return result
 
-def processing(file_name):
-    trackbars = Trackbars("data/data.json")
+trackbars = Trackbars("data/data.json")
+
+def processing(file_name, text_info):
+
     camera = Camera(f'data/{file_name}')
     name_of_window = "Test"
     inklinometer = Inklinometer(camera=camera, trackbars=trackbars, options=options_dict)
     json_module = JSONModule('data/variables.json')
 
-
     def get_time_from_inklin_file(file_name: str):
         file_name = file_name[file_name.find('_') + 1:file_name.find('.')]
         date_time_obj = datetime.strptime(file_name, '%Y_%m_%d_%H_%M_%S')
         return date_time_obj
-
 
     now_dict_data = {}
     new_dict = {}
@@ -91,7 +92,8 @@ def processing(file_name):
         CB_aver = CB_aver * linregress_CV_VIM_slope + linregress_CV_VIM_intercept
         CB_aver = round(CB_aver, 3)
         winfo2 = np.zeros((512, 512, 3), np.uint8)
-        cv2.putText(winfo2, f"Видеоинклинометр = {round((CB_aver / 0.0047), 3)}''", (0, 120), cv2.FONT_HERSHEY_COMPLEX, 0.8,
+        cv2.putText(winfo2, f"Видеоинклинометр = {round((CB_aver / 0.0047), 3)}''", (0, 120), cv2.FONT_HERSHEY_COMPLEX,
+                    0.8,
                     (0, 150, 0),
                     2)
         cv2.putText(winfo2, f"Видеоинклинометр = {CB_aver}mrad", (0, 150), cv2.FONT_HERSHEY_COMPLEX, 0.8,
@@ -118,15 +120,39 @@ def processing(file_name):
                     (0, 270), cv2.FONT_HERSHEY_COMPLEX, 0.8,
                     (0, 150, 0),
                     2)
+        cv2.putText(winfo2,
+                    text_info,
+                    (0, 300), cv2.FONT_HERSHEY_COMPLEX, 0.8,
+                    (0, 150, 0),
+                    2)
+        cv2.putText(winfo2,
+                    f'Обрабатывается файл:',
+                    (0, 330), cv2.FONT_HERSHEY_COMPLEX, 0.8,
+                    (0, 150, 0),
+                    2)
+        cv2.putText(winfo2,
+                    file_name,
+                    (0, 360), cv2.FONT_HERSHEY_COMPLEX, 0.8,
+                    (0, 150, 0),
+                    2)
 
         cv2.imshow("Window", winfo2)
 
         if (cv2.waitKey(1) & 0xFF == ord('q')) or (seconds_left <= 0 and seconds_passed >= 1):
             break
 
+
 list_processing = find('*.mp4', 'data')
-for file_name in list_processing:
+list_json = find('*.json', 'data')
+new_list_json = []
+for json in list_json:
+    new_json = json.split('\\')[1]
+    new_json = new_json[:new_json.find('_i')]
+    new_list_json.append(new_json)
+
+for id, file_name in enumerate(list_processing):
     file_name = file_name.split('\\')[1]
-    if file_name.find('mp4') != -1:
-        # print(file_name)
-        processing(file_name)
+    if file_name.find('mp4') != -1 and not (file_name in new_list_json):
+        processing(file_name, f'{id + 1} / {len(list_processing)} файлов')
+
+print('Обработка прошла успешно!')
