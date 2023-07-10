@@ -8,7 +8,7 @@ class ReaderTxt:
             last_line = lines[-6:-1]
         return last_line
 
-    def read_all(self):
-        with open(self.path, 'r') as file:
+    def read_all(self, encod=None):
+        with open(self.path, 'r', encoding=encod) as file:
             lines = file.readlines()
         return lines
