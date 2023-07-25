@@ -22,7 +22,7 @@ class Timer:  # 9
 
     def get_time(self):
         elapsed_time = time.perf_counter() - self._start_time
-        return int(elapsed_time)
+        return float(elapsed_time)
 
     def stop(self):
         """Отстановить таймер и сообщить о времени вычисления"""
@@ -33,3 +33,9 @@ class Timer:  # 9
         elapsed_time = time.perf_counter() - self._start_time
         self._start_time = None
         print(f"Вычисление заняло {elapsed_time:0.4f} секунд")
+
+# t = Timer()
+# t.start()
+# while True:
+#
+#     print(t.get_time())

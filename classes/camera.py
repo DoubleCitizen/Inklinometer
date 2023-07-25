@@ -13,7 +13,7 @@ class Camera:
         success, img = self.cap.read()
         self.count_frames += 1
         if not success:
-            self.cap = cv2.VideoCapture(self.source)
+            self.cap = cv2.VideoCapture(self.source, cv2.CAP_ANY)
             success, img = self.cap.read()
             return success, img
         return success, img

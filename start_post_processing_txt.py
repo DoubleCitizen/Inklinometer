@@ -1,5 +1,5 @@
 from classes.read_file import ReaderTxt
-from classes.convert_file_txt_to_dict3 import ConverterTxtToDict
+from classes.convert_file_txt_to_dict_notaver import ConverterTxtToDict
 from classes.save_inklinometer_data import SaveInlinometerData
 
 path = 'data/data_port_spy_2.txt'

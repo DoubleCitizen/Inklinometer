@@ -14,7 +14,7 @@ from classes.save_inklinometer_data import SaveInlinometerData
 from classes.timer import Timer
 import cv2
 
-file_name = 'inklin_2023_04_29_12_56_36.mp4'
+file_name = 'inklin_2023_07_15_18_46_34.mp4'
 
 trackbars = Trackbars("data/data.json")
 # camera = Camera("output_video2.avi")
@@ -45,33 +45,36 @@ t.start()
 seconds_passed_real = 0
 seconds_left_real = 0
 
+old_seconds_passed = 0
+seconds_passed = 0
+i = 0
+count = 0
 while True:
-    success, img = camera.get_image()
-    data_inklinometer = {}
+    count += 1
 
-    seconds_passed = int(camera.get_frames() // camera.get_fps())
+    seconds_passed = int(camera.get_frames() / camera.get_fps())
+    if seconds_passed == old_seconds_passed:
+        i += 1
+    else:
+        i = 1
+    old_seconds_passed = seconds_passed
 
-    seconds_left = int(abs(camera.get_all_frames() // camera.get_fps()) - seconds_passed)
-    if seconds_passed != 0:
-        seconds_left_real = int((t.get_time() / seconds_passed) * seconds_left)
-        seconds_passed_real = int((t.get_time() / seconds_passed) * seconds_passed)
+    seconds_left = int(abs(camera.get_all_frames() // camera.get_fps()) - int(seconds_passed))
+    if int(seconds_passed) != 0:
+        seconds_left_real = int((t.get_time() / int(seconds_passed)) * seconds_left)
+        seconds_passed_real = int((t.get_time() / int(seconds_passed)) * int(seconds_passed))
 
-    datetime_now_inklinometer = str(start_time + timedelta(seconds=seconds_passed))
+    seconds_passed_str = str(seconds_passed)
+    milliseconds = int(seconds_passed_str[seconds_passed_str.find('.') + 1:seconds_passed_str.find('.') + 4])
+
+    datetime_now_inklinometer = str(f"{start_time + timedelta(seconds=int(seconds_passed))},{i}")
 
     date_time_str_list.append(datetime_now_inklinometer)
-    if date_time_str_list[0] == date_time_str_list[-1]:
-        CB_n += 1
-        CB_sum += inklinometer.center_bubble
-    else:
-        CB_aver = CB_sum / CB_n
-        now_dict_data[date_time_str_list[0]] = {"CB": CB_aver}
-        CB_n = 0
-        CB_sum = 0
-        date_time_str_list = []
 
-        save_inklinometer2 = SaveInlinometerData('data/data_inklinometer_pp.json', now_dict_data)
-        save_inklinometer2.save_json()
-        now_dict_data = {}
+    now_dict_data[date_time_str_list[-1]] = {"CB": inklinometer.center_bubble}
+
+    save_inklinometer2 = SaveInlinometerData('data/data_inklinometer_pp.json', now_dict_data)
+    save_inklinometer2.save_json()
 
     inklinometer.main()
     trackbars.save()
@@ -98,7 +101,7 @@ while True:
                 (0, 150, 0),
                 2)
     cv2.putText(winfo2,
-                f"(кадровые) = {seconds_passed // 60 // 60}:{(seconds_passed // 60) % 60}:{seconds_passed % 60}",
+                f"(кадровые) = {int(seconds_passed) // 60 // 60}:{(int(seconds_passed) // 60) % 60}:{int(seconds_passed) % 60}",
                 (0, 210), cv2.FONT_HERSHEY_COMPLEX, 0.8,
                 (0, 150, 0),
                 2)
@@ -116,4 +119,7 @@ while True:
     cv2.imshow("Window", winfo2)
 
     if (cv2.waitKey(1) & 0xFF == ord('q')) or (seconds_left <= 0 and seconds_passed >= 1):
+        print("count", count)
+        print("camera_all_frames", camera.get_all_frames())
+        print(len(date_time_str_list))
         break
