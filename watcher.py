@@ -34,6 +34,7 @@ CB_n = 0
 CB_aver = 0
 nivel_deviation = 0
 json_module = JSONModule('data/variables.json')
+converter_txt_to_dict = ConverterTxtToDict()
 
 while True:
 
