@@ -16,7 +16,8 @@ import cv2
 
 trackbars = Trackbars("data/data.json")
 # camera = Camera("output_video2.avi")
-camera = Camera(1)
+camera = Camera("data/inklin_2023_07_28_16_11_26.mp4")
+# camera = Camera(1)
 name_of_window = "Test"
 inklinometer = Inklinometer(camera=camera, trackbars=trackbars, options=options_dict)
 

@@ -3,10 +3,8 @@ from json import JSONDecodeError
 
 import cv2
 
-
 def back(*args):
     pass
-
 
 class Trackbars:
     def empty(self, a):
@@ -31,9 +29,9 @@ class Trackbars:
         self.v_maxT = self.data.get('v_max', 255)
         self.w_2_leftT = self.data.get('w_2_left')
         self.w_1_rightT = self.data.get('w_1_right')
-        # self.rT = self.data.get('r', 215)
-        # self.gT = self.data.get('g', 236)
-        # self.bT = self.data.get('b', 241)
+        self.rT = self.data.get('r', 215)
+        self.gT = self.data.get('g', 236)
+        self.bT = self.data.get('b', 241)
         self.medT = self.data.get('med', 4)
         self.horizontal_countT = self.data.get('horizontal_count', 1)
         self.height_1T = self.data.get('height_1')
@@ -42,12 +40,31 @@ class Trackbars:
         self.width_2T = self.data.get('width_2')
         self.scale_percentT = self.data.get('scale_percent', 100)
 
-        cv2.namedWindow("Options Images")
-        cv2.resizeWindow("Options Images", 600, 180)
-        cv2.createTrackbar("Rotate Angle", "Options Images", 0, 360, self.empty)
-        cv2.createTrackbar("Horizontal Counting", "Options Images", 0, 1, self.empty)
-        cv2.createTrackbar("Scale Percent", "Options Images", 20, 100, self.empty)
-        cv2.createTrackbar("Median", "Options Images", 0, 10, self.empty)
+        cv2.namedWindow("NewMethod")
+        cv2.resizeWindow("NewMethod", 640, 240)
+        cv2.createTrackbar("Red", "NewMethod", 0, 255, self.empty)
+        cv2.createTrackbar("Green", "NewMethod", 0, 255, self.empty)
+        cv2.createTrackbar("Blue", "NewMethod", 0, 255, self.empty)
+        cv2.createTrackbar("Median", "NewMethod", 0, 10, self.empty)
+
+
+        cv2.namedWindow("Rotate Images")
+        cv2.resizeWindow("Rotate Images", 600, 100)
+        cv2.createTrackbar("Rotate Angle", "Rotate Images", 0, 360, self.empty)
+        cv2.createTrackbar("Horizontal Counting", "Rotate Images", 0, 1, self.empty)
+
+        cv2.namedWindow("Rectangles")
+        cv2.resizeWindow("Rectangles", 600, 200)
+        cv2.createTrackbar("Left Rect", "Rectangles", 0, 400, self.empty)
+        cv2.createTrackbar("Right Rect", "Rectangles", 0, 400, self.empty)
+
+        cv2.namedWindow("TrackBarsSize")
+        cv2.resizeWindow("TrackBarsSize", 680, 240)
+        cv2.createTrackbar("Height Start", "TrackBarsSize", 0, 1080 * 2, self.empty)
+        cv2.createTrackbar("Height End", "TrackBarsSize", 0, 1080 * 2, self.empty)
+        cv2.createTrackbar("width Start", "TrackBarsSize", 0, 1920 * 2, self.empty)
+        cv2.createTrackbar("width End", "TrackBarsSize", 0, 1920 * 2, self.empty)
+        cv2.createTrackbar("Scale Percent", "TrackBarsSize", 20, 100, self.empty)
 
         cv2.namedWindow("HSV New Method")
         cv2.resizeWindow("HSV New Method", 640, 300)
@@ -65,15 +82,28 @@ class Trackbars:
         cv2.setTrackbarPos("V Min", "HSV New Method", self.v_minT)
         cv2.setTrackbarPos("V Max", "HSV New Method", self.v_maxT)
 
-        cv2.setTrackbarPos("Median", "Options Images", self.medT)
-        cv2.setTrackbarPos("Horizontal Counting", "Options Images", self.horizontal_countT)
-        cv2.setTrackbarPos("Scale Percent", "Options Images", self.scale_percentT)
+        cv2.setTrackbarPos("Left Rect", "Rectangles", self.w_2_leftT)
+        cv2.setTrackbarPos("Right Rect", "Rectangles", self.w_1_rightT)
+
+        cv2.setTrackbarPos("Red", "NewMethod", self.rT)
+        cv2.setTrackbarPos("Green", "NewMethod", self.gT)
+        cv2.setTrackbarPos("Blue", "NewMethod", self.bT)
+        cv2.setTrackbarPos("Median", "NewMethod", self.medT)
+
+        cv2.setTrackbarPos("Horizontal Counting", "Rotate Images", self.horizontal_countT)
+
+        cv2.setTrackbarPos("Height Start", "TrackBarsSize", self.height_1T)
+        cv2.setTrackbarPos("Height End", "TrackBarsSize", self.height_2T)
+        cv2.setTrackbarPos("width Start", "TrackBarsSize", self.width_1T)
+        cv2.setTrackbarPos("width End", "TrackBarsSize", self.width_2T)
+
+        cv2.setTrackbarPos("Scale Percent", "TrackBarsSize", self.scale_percentT)
 
     def save(self):
         data = {
-            # "r": self.r,
-            # "g": self.g,
-            # "b": self.b,
+            "r": self.r,
+            "g": self.g,
+            "b": self.b,
             "med": self.med,
             "h_min": self.h_min,
             "h_max": self.h_max,
@@ -81,30 +111,36 @@ class Trackbars:
             "s_max": self.s_max,
             "v_min": self.v_min,
             "v_max": self.v_max,
+            "w_2_left": self.w_2_left,
+            "w_1_right": self.w_1_right,
             "horizontal_count": self.horizontal_count,
+            "height_1": self.height_1,
+            "height_2": self.height_2,
+            "width_1": self.width_1,
+            "width_2": self.width_2,
             "scale_percent": self.scale_percent,
         }
         with open("data/data.json", "w") as file:
             file.write(json.dumps(data))
 
-    # @property
-    # def r(self):
-    #     r = cv2.getTrackbarPos("Red", "NewMethod")
-    #     return r
-    #
-    # @property
-    # def g(self):
-    #     g = cv2.getTrackbarPos("Green", "NewMethod")
-    #     return g
-    #
-    # @property
-    # def b(self):
-    #     b = cv2.getTrackbarPos("Blue", "NewMethod")
-    #     return b
+    @property
+    def r(self):
+        r = cv2.getTrackbarPos("Red", "NewMethod")
+        return r
+
+    @property
+    def g(self):
+        g = cv2.getTrackbarPos("Green", "NewMethod")
+        return g
+
+    @property
+    def b(self):
+        b = cv2.getTrackbarPos("Blue", "NewMethod")
+        return b
 
     @property
     def med(self):
-        med = cv2.getTrackbarPos("Median", "Options Images")
+        med = cv2.getTrackbarPos("Median", "NewMethod")
         return med
 
     @property
@@ -144,13 +180,43 @@ class Trackbars:
 
     @property
     def horizontal_count(self):
-        horizontal_count = cv2.getTrackbarPos("Horizontal Counting", "Options Images")
+        horizontal_count = cv2.getTrackbarPos("Horizontal Counting", "Rotate Images")
         return horizontal_count
 
     @property
+    def height_1(self):
+        height_1 = cv2.getTrackbarPos("Height Start", "TrackBarsSize")
+        return height_1
+
+    @property
+    def height_2(self):
+        height_2 = cv2.getTrackbarPos("Height End", "TrackBarsSize")
+        return height_2
+
+    @property
+    def width_1(self):
+        width_1 = cv2.getTrackbarPos("width Start", "TrackBarsSize")
+        return width_1
+
+    @property
+    def width_2(self):
+        width_2 = cv2.getTrackbarPos("width End", "TrackBarsSize")
+        return width_2
+
+    @property
     def scale_percent(self):
-        scale_percent = cv2.getTrackbarPos("Scale Percent", "Options Images")
+        scale_percent = cv2.getTrackbarPos("Scale Percent", "TrackBarsSize")
         return scale_percent
+
+    @property
+    def w_2_left(self):
+        w_2_left = cv2.getTrackbarPos("Left Rect", "Rectangles")
+        return w_2_left
+
+    @property
+    def w_1_right(self):
+        w_1_right = cv2.getTrackbarPos("Right Rect", "Rectangles")
+        return w_1_right
 
     @h_min.setter
     def h_min(self, value):
@@ -176,17 +242,17 @@ class Trackbars:
     def v_max(self, value):
         self._v_max = value
 
-    # @r.setter
-    # def r(self, value):
-    #     self._r = value
-    #
-    # @g.setter
-    # def g(self, value):
-    #     self._g = value
-    #
-    # @b.setter
-    # def b(self, value):
-    #     self._b = value
+    @r.setter
+    def r(self, value):
+        self._r = value
+
+    @g.setter
+    def g(self, value):
+        self._g = value
+
+    @b.setter
+    def b(self, value):
+        self._b = value
 
     @med.setter
     def med(self, value):

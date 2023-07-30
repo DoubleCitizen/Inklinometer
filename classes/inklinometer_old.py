@@ -115,24 +115,17 @@ class Inklinometer:
         cv2.rectangle(thresh, (self.x1_framing, self.y1_framing), (self.x2_framing, self.y2_framing), (0, 255, 0), 2)
         # self.view_image(thresh, "Test", scale)
         self.gray = self.gray[self.y1_framing:self.y2_framing, self.x1_framing:self.x2_framing]
+        image = image[self.y1_framing:self.y2_framing, self.x1_framing:self.x2_framing]
 
-        # todo Метод ОТСУ
-        ret, imgf = cv2.threshold(self.gray, 0, 255, cv2.THRESH_OTSU)
-        self.view_image(imgf, "imgf", scale)
-        # todo Метод ОТСУ
-
-        # todo Старый метод
-        # ret, threshold = cv2.threshold(self.gray, r, g, b)
-        # todo Метод ОТСУ
-        threshold = imgf
+        ret, threshold = cv2.threshold(self.gray, r, g, b)
         # self.view_image(threshold, "threshold", scale)  ## 4
-        # contours, hierarchy = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        contours, hierarchy = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-        x1, y1, x2, y2 = self.get_cont(threshold, from_=200, to_=10000)
+        x1, y1, x2, y2 = self.get_cont(threshold)
         cv2.rectangle(self.gray, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
-        # cv2.drawContours(image, contours, -1, (0, 0, 255), 3)
-        # self.view_image(image, "image", scale)  ## 5
+        cv2.drawContours(image, contours, -1, (0, 0, 255), 3)
+        self.view_image(image, "image", scale)  ## 5
         return x1, y1, x2, y2
 
     @staticmethod
@@ -267,9 +260,9 @@ class Inklinometer:
     # def
 
     def main(self):
-        # r = self.trackbars.r
-        # g = self.trackbars.g
-        # b = self.trackbars.b
+        r = self.trackbars.r
+        g = self.trackbars.g
+        b = self.trackbars.b
         med = self.trackbars.med
 
         h_min = self.trackbars.h_min
@@ -291,7 +284,7 @@ class Inklinometer:
             scale_percent = 1
 
         # Подсчёт значений по x, y
-        self.x1, self.y2, self.x2, self.y1 = self.select_method(img, scale=scale_percent, hsv=hsv_list,
+        self.x1, self.y2, self.x2, self.y1 = self.select_method(img, r=r, g=g, b=b, scale=scale_percent, hsv=hsv_list,
                                                                 med=med)
         self.height, self.width = img.shape[:2]
 
@@ -350,3 +343,5 @@ class Inklinometer:
                         f"count_sec = {self.get_second_method()}''",
                         (0, 500), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 150, 0), 2)
             cv2.imshow("Window", winfo)
+
+
