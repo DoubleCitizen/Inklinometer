@@ -116,23 +116,16 @@ class Inklinometer:
         # self.view_image(thresh, "Test", scale)
         self.gray = self.gray[self.y1_framing:self.y2_framing, self.x1_framing:self.x2_framing]
 
-        # todo Метод ОТСУ
         ret, imgf = cv2.threshold(self.gray, 0, 255, cv2.THRESH_OTSU)
         self.view_image(imgf, "imgf", scale)
-        # todo Метод ОТСУ
 
-        # todo Старый метод
-        # ret, threshold = cv2.threshold(self.gray, r, g, b)
-        # todo Метод ОТСУ
         threshold = imgf
-        # self.view_image(threshold, "threshold", scale)  ## 4
-        # contours, hierarchy = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
 
         x1, y1, x2, y2 = self.get_cont(threshold, from_=200, to_=10000)
         cv2.rectangle(self.gray, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
-        # cv2.drawContours(image, contours, -1, (0, 0, 255), 3)
-        # self.view_image(image, "image", scale)  ## 5
+
         return x1, y1, x2, y2
 
     @staticmethod
