@@ -84,13 +84,14 @@ class Inklinometer:
 
         lower = np.array((hsv[0], hsv[2], hsv[4]), np.uint8)
         upper = np.array((hsv[1], hsv[3], hsv[5]), np.uint8)
-
+        self.view_image(image, "original", scale)
         # Применение Медианного фильтра
         MedianNeChet = med
         if med > 1:
             if med % 2 == 0:
                 MedianNeChet += 1
             image = cv2.medianBlur(image, MedianNeChet)
+
 
         # self.view_image(image, "Original", scale)
         hsv_img = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
